@@ -2,38 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Get User Location</title>
+  <title>Live Location Map</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-    }
-    #output {
-      margin-top: 1rem;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #f9f9f9;
+    #map {
+      height: 400px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-<h1>Find My Location</h1>
-<button id="locateBtn">Get My Location</button>
-
+<h1>Live Location App 🌍</h1>
+<button id="locateBtn">Locate Me</button>
 <div id="output"></div>
+<div id="map"></div>
 
 <script type="module">
+  const apiKey = import.meta.env.VITE_OPENCAGE_API_KEY;
+
   const locateBtn = document.getElementById('locateBtn');
   const output = document.getElementById('output');
-
-  // Read the API Key from Vite environment variables
-  const apiKey = import.meta.env.VITE_OPENCAGE_API_KEY;
+  let map; // We'll initialize later
 
   locateBtn.addEventListener('click', () => {
     if (!navigator.geolocation) {
-      output.innerHTML = "Geolocation is not supported by your browser.";
+      output.innerHTML = "Geolocation is not supported.";
       return;
     }
 
@@ -52,21 +49,41 @@
       const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`;
 
       try {
-        const response = await fetch(url);
-        const data = await response.json();
+        const res = await fetch(url);
+        const data = await res.json();
         const address = data.results[0]?.formatted || "Address not found.";
 
         output.innerHTML += `<br><strong>Address:</strong><br>${address}`;
-      } catch (error) {
-        output.innerHTML += `<br>Error fetching address: ${error.message}`;
+
+        // Initialize the map
+        if (!map) {
+          map = L.map('map').setView([latitude, longitude], 13);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+          }).addTo(map);
+        } else {
+          map.setView([latitude, longitude], 13);
+        }
+
+        // Add marker
+        L.marker([latitude, longitude])
+          .addTo(map)
+          .bindPopup('You are here 📍<br>' + address)
+          .openPopup();
+
+      } catch (err) {
+        output.innerHTML += `<br>Error: ${err.message}`;
       }
 
-    }, (error) => {
-      output.innerHTML = `Error: ${error.message}`;
+    }, (err) => {
+      output.innerHTML = `Error: ${err.message}`;
     });
   });
 </script>
 
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
 </body>
 </html>
-
