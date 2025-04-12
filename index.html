@@ -44,7 +44,7 @@
         <strong>Coordinates:</strong><br>
         Latitude: ${latitude}<br>
         Longitude: ${longitude}<br><br>
-        <strong>Getting address...2</strong>
+        <strong>Getting address...</strong>
       `;
 
       const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&address_only=1&roadinfo=1&key=${apiKey}`;
@@ -54,8 +54,8 @@
         const data = await res.json();
         console.log(data);
         // const street = JSON.stringify(data.results[0]);
-        const address = data.results[0]?.formatted || "Address not found.";
-        // const address = street.road + ", " + street.county + ", " + street.state + ", " + street.country;
+        // const address = data.results[0]?.formatted || "Address not found.";
+        const address = street.road + ", " + street.county + ", " + street.state + ", " + street.country;
         // const address = street;
 
         output.innerHTML += `<br><strong>Address:</strong><br>${address}`;
