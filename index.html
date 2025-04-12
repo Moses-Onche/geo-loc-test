@@ -53,7 +53,7 @@
         const res = await fetch(url);
         const data = await res.json();
         console.log(data);
-        // const street = JSON.stringify(data.results[0]);
+        const street = data.results[0].components;
         // const address = data.results[0]?.formatted || "Address not found.";
         const address = street.road + ", " + street.county + ", " + street.state + ", " + street.country;
         // const address = street;
