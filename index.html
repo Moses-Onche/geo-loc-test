@@ -54,15 +54,15 @@
       try {
         const res = await fetch(url);
         const data = await res.json();
+        const address = data.results[0]?.formatted || "Address not found. Please turn on your location";
         // console.log(data.features[1].properties);
         // console.log(data.results[0])
-        const street = data.results[0].components;
-        console.log(street.road)
-        // const address = data.results[0]?.formatted || "Address not found. Please turn on your location";
-        let road;
-        if (street.road == "unnamed road") road = "";
-        else road = street.road + ", ";
-        const address = road + street.village + ", " + street.state + ", " + street.country;
+        // const street = data.results[0].components;
+        // console.log(street.road)
+        // let road;
+        // if (street.road == "unnamed road") road = "";
+        // else road = street.road + ", ";
+        // const address = road + street.village + ", " + street.state + ", " + street.country;
         
         // MapBox Result
         // const address = data.features[1].properties.full_address;
